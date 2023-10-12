@@ -1,46 +1,12 @@
-# Getting Started with Create React App
+# ⚾ 숫자 야구 게임(Bulls And Cows) ⚾
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 👉 게임 룰
+- 게임을 진행할 숫자 갯수를 선택한다. (radio 버튼)
+- 숫자를 랜덤으로 생성 받는다. (중복 X)
+- 게임을 시작한다.
+- 사용자가 숫자를 입력하면 정답 숫자와 사용자가 입력한 숫자를 비교하여
+    - 숫자 포함 / 위치 일치 > 1 Strike
+    - 숫자 포함 / 위치 불일치 > 1 Ball
+    - 숫자 미포함 > 1 Out
+- 10 라운드까지 진행하고, 그때까지 정답을 맞추지 못하면 게임 실패
+- 10 라운드 이내에 정답을 맞추면 게임 성공
