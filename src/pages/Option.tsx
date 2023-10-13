@@ -1,23 +1,25 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast, { notify } from "../elements/Toast";
-import Content from "../components/Content";
+import { useRecoilState } from "recoil";
+import { gameOptionState } from "../recoil/atom";
 
 const Option = () => {
   const navigation = useNavigate();
 
-  const [count, setCount] = useState(3);
-  const [number, setNumber] = useState<number[]>([]);
+  const [{ count }, setOptionState] = useRecoilState(gameOptionState);
 
   useEffect(() => {
     mixHandler();
-  }, []);
+  }, [count]);
 
   const mixHandler = () => {
     const result = makeRandomNumber();
 
-    setNumber(result);
+    setOptionState((prev) => {
+      return { ...prev, numbers: result };
+    });
   };
 
   const makeRandomNumber = () => {
@@ -34,7 +36,9 @@ const Option = () => {
   };
 
   const countHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCount(Number(e.target.value));
+    setOptionState((prev) => {
+      return { ...prev, count: Number(e.target.value) };
+    });
   };
 
   return (
@@ -67,7 +71,7 @@ const Option = () => {
           </label>
         </div>
         <br />
-        <label>숫자 : {number.map((_) => "_ ")}</label>
+        <p>"{count}글자"로 게임이 시작됩니다.</p>
       </div>
       <br />
       <ButtonWrap>
