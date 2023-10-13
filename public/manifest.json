@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "숫자 야구 게임",
+  "name": "숫자 야구 게임",
   "icons": [
     {
       "src": "logo.ico",
