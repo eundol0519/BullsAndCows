@@ -7,6 +7,7 @@ import { RecoilRoot } from "recoil";
 import Rules from "./pages/Rules";
 import Content from "./components/Content";
 import Game from "./pages/Game";
+import Option from "./pages/Option";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,7 +19,8 @@ const router = createBrowserRouter([
     element: <App />,
   },
   { path: "/rules", element: <Rules /> },
-  { path: "/game", element: <Game /> },
+  { path: "/option", element: <Option /> },
+  { path: "/gameStart", element: <Game /> },
 ]);
 
 root.render(

@@ -21,7 +21,7 @@ function App() {
       >
         <button
           onClick={() => {
-            navigation("/game");
+            navigation("/option");
           }}
         >
           게임 시작

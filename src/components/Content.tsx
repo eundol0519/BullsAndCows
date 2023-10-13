@@ -6,10 +6,12 @@ const Content = ({ children }: ChildrenProps) => {
 };
 
 const Wrap = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 export default Content;
