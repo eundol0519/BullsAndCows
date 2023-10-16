@@ -1,4 +1,9 @@
-import { useEffect, useState } from "react";
+import React, {
+  InputHTMLAttributes,
+  ReactComponentElement,
+  useEffect,
+  useState,
+} from "react";
 import { useRecoilValue } from "recoil";
 import { getGameOptionState } from "../recoil/atom";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +13,8 @@ import Input from "../elements/Input";
 import { css } from "@emotion/react";
 import Button from "../elements/Button";
 
-interface AnswerLogProps {
+interface InputRoundProps {
+  [key: string]: string | number;
   number: string;
   strike: number;
   ball: number;
@@ -18,14 +24,13 @@ interface AnswerLogProps {
 const Game = () => {
   const navigation = useNavigate();
 
-  const { numberCount, roundCount, numbers } =
-    useRecoilValue(getGameOptionState);
-  const [answer, setAnswer] = useState("");
-  const [answerLog, setAnswerLog] = useState<AnswerLogProps[]>([]);
+  const { count, round, answer } = useRecoilValue(getGameOptionState);
+  const [input, setInput] = useState("");
+  const [inputRound, setInputRound] = useState<InputRoundProps[]>([]);
   const [end, setEnd] = useState(false);
 
   useEffect(() => {
-    if (numbers.length === 0) {
+    if (answer.length === 0) {
       navigation("/option");
     }
   }, []);
@@ -33,54 +38,69 @@ const Game = () => {
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    if (value.length > numberCount) {
+    if (value.length > count) {
       return;
     } else {
-      setAnswer(value);
+      setInput(value);
     }
   };
 
   const submit = () => {
-    if (answerLog.length >= 10) {
+    // 현재 라운드 > 총 라운드인 경우
+    if (inputRound.length >= round) {
       setEnd(true);
       notify({
         type: "error",
-        text: "10라운드까지 정답을 맞추지 못하셨습니다😢 게임이 종료됩니다.",
+        text: `${inputRound.length}라운드까지 정답을 맞추지 못하셨습니다😢 게임이 종료됩니다.`,
       });
       return;
     }
 
-    const strikeCount = numbers.filter(
-      (item, i) => Number(answer.split("")[i]) === item
+    // 중복된 숫자를 입력한 경우
+    const sameAnswer = inputRound.some((item) => item.number === input);
+
+    if (sameAnswer) {
+      notify({
+        type: "error",
+        text: "동일한 숫자는 입력이 불가합니다.",
+      });
+      setInput("");
+      return;
+    }
+
+    const strikeCount = answer.filter(
+      (item, i) => Number(input.split("")[i]) === item
     ).length;
 
-    if (strikeCount === numberCount) {
+    if (strikeCount === count) {
       setEnd(true);
       notify({
         type: "success",
-        text: "정답입니다🥳",
+        text: `${round}라운드 중 ${
+          inputRound.length + 1
+        }라운드에 정답을 맞추셨습니다.🥳`,
       });
     }
 
-    const ballCount = answer
+    const ballCount = input
       .split("")
       .filter(
-        (item, i) =>
-          numbers[i] !== Number(item) && numbers.includes(Number(item))
+        (item, i) => answer[i] !== Number(item) && answer.includes(Number(item))
       ).length;
 
-    const outCount = numberCount - (strikeCount + ballCount);
+    const outCount = count - (strikeCount + ballCount);
 
     const log = {
-      number: answer,
+      number: input,
       strike: strikeCount,
       ball: ballCount,
       out: outCount,
     };
 
-    setAnswerLog((prev) => {
+    setInputRound((prev) => {
       return [...prev, log];
     });
+    setInput("");
   };
 
   return (
@@ -92,24 +112,35 @@ const Game = () => {
           margin: 0;
         `}
       >
-        {answerLog.length <= 10 && end ? numbers : numbers.map((_) => "_ ")}
+        {inputRound.length <= 10 && end ? answer : answer.map((_) => "_ ")}
       </h1>
-      <LogList lengthYN={answerLog.length > 0}>
-        {answerLog.map((item) => (
-          <LogItem>
-            <strong>{item.number}</strong>
-            <hr />
-            Strike : <strong>{item.strike}</strong> | Ball :{" "}
-            <strong>{item.ball}</strong> | Out : <strong>{item.out}</strong>
-          </LogItem>
+      <p
+        css={css`
+          margin-top: 0;
+          text-align: center;
+        `}
+      >
+        (현재 라운드 : {inputRound.length}/{round})
+      </p>
+      <LogList lengthYN={inputRound.length > 0}>
+        {inputRound.map((item) => (
+          <React.Fragment key={item.number}>
+            <LogItem>
+              <strong>{item.number}</strong>
+              <hr />
+              Strike : <strong>{item.strike}</strong> | Ball :{" "}
+              <strong>{item.ball}</strong> | Out : <strong>{item.out}</strong>
+            </LogItem>
+          </React.Fragment>
         ))}
       </LogList>
       <Input
         type="number"
-        name="answer"
+        name="count"
         onChange={inputHandler}
-        value={answer}
-        placeholder={`${numberCount}개의 숫자를 입력해주세요.`}
+        value={input}
+        placeholder={`${count}개의 숫자를 입력해주세요.`}
+        enter={submit}
       />
       <div>
         <Button onClick={submit} disabled={end}>
@@ -117,10 +148,14 @@ const Game = () => {
         </Button>
         <Button
           onClick={() => {
-            navigation("/option");
+            if (end) {
+              navigation("/");
+            } else {
+              navigation("/option");
+            }
           }}
         >
-          뒤로가기
+          {end ? "메인으로" : "뒤로가기"}
         </Button>
       </div>
       <Toast />
@@ -129,11 +164,12 @@ const Game = () => {
 };
 
 const LogList = styled.div<{ lengthYN: boolean }>`
-  max-height: 400px;
+  max-height: 300px;
   overflow: auto;
   padding: 10px;
   border-radius: 15px;
-  background: ${({ lengthYN }) => (lengthYN ? "#eee" : "white")};
+  background: ${({ lengthYN }) =>
+    lengthYN ? "rgba(238, 238, 238, 0.5)" : "white"};
 `;
 
 const LogItem = styled.div`

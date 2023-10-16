@@ -12,6 +12,7 @@ interface Props {
   onKeyUp?: any;
   onFocus?: any;
   onBlur?: any;
+  enter?: any;
 }
 
 const Input = ({
@@ -26,7 +27,14 @@ const Input = ({
   onKeyUp,
   onFocus,
   onBlur,
+  enter,
 }: Props) => {
+  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      enter();
+    }
+  };
+
   return (
     <InputWrap
       type={type}
@@ -40,6 +48,7 @@ const Input = ({
       onKeyUp={onKeyUp}
       onFocus={onFocus}
       onBlur={onBlur}
+      onKeyPress={onKeyPress}
     />
   );
 };

@@ -3,7 +3,7 @@ import styled from "@emotion/styled/macro";
 
 interface Props {
   children: ReactNode;
-  duplicateClickPrevention?: boolean;
+  loadingYN?: boolean;
   disabled?: boolean;
   onClick?: any;
   className?: string;
@@ -11,31 +11,31 @@ interface Props {
 
 const Button = ({
   children,
-  duplicateClickPrevention = false,
+  loadingYN = false,
   disabled = false,
   onClick,
   className,
 }: Props) => {
-  const [requestingApi, setRequestingApi] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <Wrap
       className={className}
       type="button"
       onClick={
-        Boolean(duplicateClickPrevention)
+        Boolean(loadingYN)
           ? () => {
-              if (requestingApi) return;
+              if (loading) return;
 
-              setRequestingApi(true);
+              setLoading(true);
               setTimeout(() => {
                 onClick && onClick();
-                setRequestingApi(false);
-              }, 1000);
+                setLoading(false);
+              }, 500);
             }
           : onClick
       }
-      disabled={requestingApi || disabled}
+      disabled={loading || disabled}
     >
       {children}
     </Wrap>

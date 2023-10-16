@@ -11,25 +11,24 @@ import Button from "../elements/Button";
 const Option = () => {
   const navigation = useNavigate();
 
-  const [{ numberCount, roundCount }, setOptionState] =
-    useRecoilState(gameOptionState);
+  const [{ count, round }, setOptionState] = useRecoilState(gameOptionState);
 
   useEffect(() => {
     mixHandler();
-  }, [numberCount]);
+  }, [count]);
 
   const mixHandler = () => {
     const result = makeRandomNumber();
 
     setOptionState((prev) => {
-      return { ...prev, numbers: result };
+      return { ...prev, answer: result };
     });
   };
 
   const makeRandomNumber = () => {
     let numbers: number[] = [];
 
-    while (numbers.length < numberCount) {
+    while (numbers.length < count) {
       const number = Math.floor(Math.random() * 10); // 0 ~ 9
       const notSame = !numbers.includes(number);
 
@@ -41,20 +40,31 @@ const Option = () => {
 
   const countHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
-    let value: number | string = null;
+    let value: number = null;
 
     switch (name) {
-      case "numberCount":
-      case "roundCount":
-        value = Number(e.target.value);
+      case "count":
+      case "round":
+        const number = Number(e.target.value.replace(/[^0-9]/g, ""));
+
+        if (number <= 50) {
+          value = number;
+        } else {
+          notify({
+            type: "error",
+            text: "50라운드까지만 설정하실 수 있습니다.",
+          });
+          value = 50;
+        }
+
         break;
       default:
-        value = e.target.value;
+        console.error("case가 존재하지 않습니다.");
         break;
     }
 
     setOptionState((prev) => {
-      return { ...prev, [name]: value };
+      return { ...prev, [name]: value || null };
     });
   };
 
@@ -62,64 +72,70 @@ const Option = () => {
     <div>
       <h2>Options</h2>
       <div className="optionList">
-        <OptionItem>
+        <OptionItem margin={20}>
           <label className="title">숫자 개수</label>
           <hr />
-          <label>
-            <input
-              type="radio"
-              name="numberCount"
-              value="3"
-              checked={numberCount === 3}
-              onChange={countHandler}
-            />
-            3
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="numberCount"
-              value="4"
-              checked={numberCount === 4}
-              onChange={countHandler}
-            />
-            4
-          </label>
+          <div className="radioWrap">
+            <RadioItem>
+              <input
+                type="radio"
+                name="count"
+                value="3"
+                checked={count === 3}
+                onChange={countHandler}
+              />
+              3
+            </RadioItem>
+            <RadioItem>
+              <input
+                type="radio"
+                name="count"
+                value="4"
+                checked={count === 4}
+                onChange={countHandler}
+              />
+              4
+            </RadioItem>
+          </div>
         </OptionItem>
-        <OptionItem className="option">
-          <label className="title">라운드 수</label>
+        <OptionItem className="option" margin={0}>
+          <label className="title">라운드 수 (최대 50라운드까지)</label>
           <hr />
-          <Input name="roundCount" value={roundCount} onChange={countHandler} />
+          <Input name="round" value={round} onChange={countHandler} />
         </OptionItem>
-        <p
-          css={css`
-            font-weight: 700;
-          `}
-        >
-          "{numberCount}글자, {roundCount}라운드"로 게임이 진행됩니다.
-        </p>
       </div>
-      <br />
-      <ButtonWrap>
-        <Button
-          onClick={() => {
-            mixHandler();
-            notify({
-              type: "success",
-              text: "숫자가 생성되었습니다.",
-            });
-          }}
-        >
-          숫자 생성
-        </Button>
-        <Button
-          onClick={() => {
+      <Button
+        onClick={() => {
+          mixHandler();
+          notify({
+            type: "success",
+            text: "숫자가 생성되었습니다.",
+          });
+        }}
+        loadingYN
+      >
+        숫자 생성
+      </Button>
+      <div
+        css={css`
+          margin: 20px 0;
+          border-bottom: 1px solid #e1e1e1;
+        `}
+      />
+      <Button
+        onClick={() => {
+          notify({
+            type: "success",
+            text: `${count}글자, ${round}라운드로 게임이 진행됩니다.`,
+          });
+          setTimeout(() => {
             navigation("/gameStart");
-          }}
-        >
-          시작하기
-        </Button>
-      </ButtonWrap>
+          }, 2200);
+        }}
+        loadingYN
+      >
+        시작하기
+      </Button>
       <Button
         onClick={() => {
           navigation("/");
@@ -132,14 +148,8 @@ const Option = () => {
   );
 };
 
-const ButtonWrap = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-`;
-
-const OptionItem = styled.div`
-  margin-bottom: 20px;
+const OptionItem = styled.div<{ margin: number }>`
+  margin-bottom: ${({ margin }) => `${margin}px`};
 
   .title {
     display: block;
@@ -153,6 +163,36 @@ const OptionItem = styled.div`
 
   input {
     margin-top: 0;
+  }
+
+  .radioWrap {
+    display: flex;
+    gap: 20px;
+  }
+`;
+
+const RadioItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 18px;
+  line-height: 2rem;
+
+  [type="radio"],
+  span {
+    vertical-align: middle;
+  }
+
+  [type="radio"] {
+    appearance: none;
+    border: 1px solid #e1e1e1;
+    border-radius: 50%;
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  [type="radio"]:checked {
+    border: 0.4em solid var(--main-color);
   }
 `;
 

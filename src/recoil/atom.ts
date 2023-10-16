@@ -3,9 +3,9 @@ import { atom, selector } from "recoil";
 export const gameOptionState = atom({
   key: "gameOptionState",
   default: {
-    numberCount: 3,
-    roundCount: 10,
-    numbers: [],
+    count: 3,
+    round: 10,
+    answer: [],
   },
 });
 
