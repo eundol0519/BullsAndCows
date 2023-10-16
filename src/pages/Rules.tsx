@@ -29,7 +29,7 @@ const Rules = () => {
       </ul>
       <Button
         onClick={() => {
-          navigation(-1);
+          navigation("/");
         }}
       >
         뒤로가기

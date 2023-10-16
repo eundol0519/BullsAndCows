@@ -4,6 +4,7 @@ import { getGameOptionState } from "../recoil/atom";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Toast, { notify } from "../elements/Toast";
+import Input from "../elements/Input";
 
 interface AnswerLogProps {
   number: string;
@@ -15,21 +16,21 @@ interface AnswerLogProps {
 const Game = () => {
   const navigation = useNavigate();
 
-  const { count, numbers } = useRecoilValue(getGameOptionState);
+  const { numberCount, numbers } = useRecoilValue(getGameOptionState);
   const [answer, setAnswer] = useState("");
   const [answerLog, setAnswerLog] = useState<AnswerLogProps[]>([]);
   const [end, setEnd] = useState(false);
 
   useEffect(() => {
     if (numbers.length === 0) {
-      navigation(-1);
+      navigation("/option");
     }
   }, []);
 
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    if (value.length > count) {
+    if (value.length > numberCount) {
       return;
     } else {
       setAnswer(value);
@@ -46,9 +47,11 @@ const Game = () => {
       return;
     }
 
-    const strikeCount = numbers.filter((item, i) => Number(answer.split("")[i]) === item).length;
+    const strikeCount = numbers.filter(
+      (item, i) => Number(answer.split("")[i]) === item
+    ).length;
 
-    if (strikeCount === count) {
+    if (strikeCount === numberCount) {
       setEnd(true);
       notify({
         type: "success",
@@ -56,9 +59,14 @@ const Game = () => {
       });
     }
 
-    const ballCount = answer.split("").filter((item, i) => numbers[i] !== Number(item) && numbers.includes(Number(item))).length;
+    const ballCount = answer
+      .split("")
+      .filter(
+        (item, i) =>
+          numbers[i] !== Number(item) && numbers.includes(Number(item))
+      ).length;
 
-    const outCount = count - (strikeCount + ballCount);
+    const outCount = numberCount - (strikeCount + ballCount);
 
     const log = {
       number: answer,
@@ -74,7 +82,9 @@ const Game = () => {
 
   return (
     <div>
-      <h1>{answerLog.length <= 10 && end ? numbers : numbers.map((_) => "_ ")}</h1>
+      <h1>
+        {answerLog.length <= 10 && end ? numbers : numbers.map((_) => "_ ")}
+      </h1>
       <div>
         {answerLog.map((item) => (
           <LogItem>
@@ -84,14 +94,19 @@ const Game = () => {
           </LogItem>
         ))}
       </div>
-      <input type="number" onChange={inputHandler} value={answer} />
+      <Input
+        type="number"
+        name="answer"
+        onChange={inputHandler}
+        value={answer}
+      />
       <ButtonWrap>
         <button onClick={submit} disabled={end}>
           제출하기
         </button>
         <button
           onClick={() => {
-            navigation(-1);
+            navigation("/option");
           }}
         >
           뒤로가기

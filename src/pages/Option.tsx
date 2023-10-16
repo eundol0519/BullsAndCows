@@ -4,15 +4,19 @@ import { useNavigate } from "react-router-dom";
 import Toast, { notify } from "../elements/Toast";
 import { useRecoilState } from "recoil";
 import { gameOptionState } from "../recoil/atom";
+import Input from "../elements/Input";
+import { css } from "@emotion/react";
+import Button from "../elements/Button";
 
 const Option = () => {
   const navigation = useNavigate();
 
-  const [{ count }, setOptionState] = useRecoilState(gameOptionState);
+  const [{ numberCount, roundCount }, setOptionState] =
+    useRecoilState(gameOptionState);
 
   useEffect(() => {
     mixHandler();
-  }, [count]);
+  }, [numberCount]);
 
   const mixHandler = () => {
     const result = makeRandomNumber();
@@ -25,7 +29,7 @@ const Option = () => {
   const makeRandomNumber = () => {
     let numbers: number[] = [];
 
-    while (numbers.length < count) {
+    while (numbers.length < numberCount) {
       const number = Math.floor(Math.random() * 10); // 0 ~ 9
       const notSame = !numbers.includes(number);
 
@@ -36,25 +40,37 @@ const Option = () => {
   };
 
   const countHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    let value: number | string = null;
+
+    switch (name) {
+      case "numberCount":
+      case "roundCount":
+        value = Number(e.target.value);
+        break;
+      default:
+        value = e.target.value;
+        break;
+    }
+
     setOptionState((prev) => {
-      return { ...prev, count: Number(e.target.value) };
+      return { ...prev, [name]: value };
     });
   };
 
   return (
     <div>
-      <div className="rules">
-        <h3>👉 선택지</h3>
-      </div>
+      <h2>Options</h2>
       <div className="optionList">
-        <div>
-          <label>숫자 개수 : </label>
+        <OptionItem>
+          <label className="title">숫자 개수</label>
+          <hr />
           <label>
             <input
               type="radio"
-              name="numberOfNumbers"
+              name="numberCount"
               value="3"
-              checked={count === 3}
+              checked={numberCount === 3}
               onChange={countHandler}
             />
             3
@@ -62,20 +78,30 @@ const Option = () => {
           <label>
             <input
               type="radio"
-              name="numberOfNumbers"
+              name="numberCount"
               value="4"
-              checked={count === 4}
+              checked={numberCount === 4}
               onChange={countHandler}
             />
             4
           </label>
-        </div>
-        <br />
-        <p>"{count}글자"로 게임이 시작됩니다.</p>
+        </OptionItem>
+        <OptionItem className="option">
+          <label className="title">라운드 수</label>
+          <hr />
+          <Input name="roundCount" value={roundCount} onChange={countHandler} />
+        </OptionItem>
+        <p
+          css={css`
+            font-weight: 700;
+          `}
+        >
+          "{numberCount}글자, {roundCount}라운드"로 게임이 진행됩니다.
+        </p>
       </div>
       <br />
       <ButtonWrap>
-        <button
+        <Button
           onClick={() => {
             mixHandler();
             notify({
@@ -85,22 +111,22 @@ const Option = () => {
           }}
         >
           숫자 생성
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             navigation("/gameStart");
           }}
         >
           시작하기
-        </button>
-        <button
-          onClick={() => {
-            navigation(-1);
-          }}
-        >
-          뒤로가기
-        </button>
+        </Button>
       </ButtonWrap>
+      <Button
+        onClick={() => {
+          navigation("/");
+        }}
+      >
+        뒤로가기
+      </Button>
       <Toast />
     </div>
   );
@@ -110,6 +136,24 @@ const ButtonWrap = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 10px;
+`;
+
+const OptionItem = styled.div`
+  margin-bottom: 20px;
+
+  .title {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  hr {
+    border: 1px solid #eee;
+  }
+
+  input {
+    margin-top: 0;
+  }
 `;
 
 export default Option;
