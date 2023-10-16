@@ -8,6 +8,7 @@ import Rules from "./pages/Rules";
 import Content from "./components/Content";
 import Game from "./pages/Game";
 import Option from "./pages/Option";
+import "./styles/index.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

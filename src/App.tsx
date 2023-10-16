@@ -1,43 +1,37 @@
-import "./App.css";
-
 import { useNavigate } from "react-router-dom";
 import { css } from "@emotion/react";
+import baseBallImg from "./assets/layout/baseBall.png";
+import styled from "@emotion/styled";
+import Button from "./elements/Button";
 
 function App() {
   const navigation = useNavigate();
 
   return (
-    <div>
-      숫자 야구 게임
-      <div
-        className="buttonWrap"
-        css={css`
-          display: flex;
-
-          & button {
-            display: inline-block;
-          }
-        `}
+    <Wrap>
+      <img src={baseBallImg} width={150} height={150} alt="baseBallIcon" />
+      <h2>Bulls And Cows</h2>
+      <Button
+        onClick={() => {
+          navigation("/option");
+        }}
       >
-        <button
-          onClick={() => {
-            navigation("/option");
-          }}
-        >
-          게임 시작
-        </button>
-        <button
-          onClick={() => {
-            navigation("/rules");
-          }}
-        >
-          룰 보기
-        </button>
-      </div>
-    </div>
+        게임 시작
+      </Button>
+      <Button
+        onClick={() => {
+          navigation("/rules");
+        }}
+      >
+        게임 룰
+      </Button>
+    </Wrap>
   );
 }
 
-// const testCss = (props: Test) => css``;
+const Wrap = styled.div`
+  text-align: center;
+  width: 100%;
+`;
 
 export default App;
