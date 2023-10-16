@@ -46,9 +46,7 @@ const Game = () => {
       return;
     }
 
-    const strikeCount = numbers.filter(
-      (item, i) => Number(answer.split("")[i]) === item
-    ).length;
+    const strikeCount = numbers.filter((item, i) => Number(answer.split("")[i]) === item).length;
 
     if (strikeCount === count) {
       setEnd(true);
@@ -58,12 +56,7 @@ const Game = () => {
       });
     }
 
-    const ballCount = answer
-      .split("")
-      .filter(
-        (item, i) =>
-          numbers[i] !== Number(item) && numbers.includes(Number(item))
-      ).length;
+    const ballCount = answer.split("").filter((item, i) => numbers[i] !== Number(item) && numbers.includes(Number(item))).length;
 
     const outCount = count - (strikeCount + ballCount);
 
@@ -81,9 +74,7 @@ const Game = () => {
 
   return (
     <div>
-      <h1>
-        {answerLog.length < 10 && end ? numbers : numbers.map((_) => "_ ")}
-      </h1>
+      <h1>{answerLog.length <= 10 && end ? numbers : numbers.map((_) => "_ ")}</h1>
       <div>
         {answerLog.map((item) => (
           <LogItem>
