@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Toast, { notify } from "../elements/Toast";
 import Input from "../elements/Input";
+import { css } from "@emotion/react";
+import Button from "../elements/Button";
 
 interface AnswerLogProps {
   number: string;
@@ -16,7 +18,8 @@ interface AnswerLogProps {
 const Game = () => {
   const navigation = useNavigate();
 
-  const { numberCount, numbers } = useRecoilValue(getGameOptionState);
+  const { numberCount, roundCount, numbers } =
+    useRecoilValue(getGameOptionState);
   const [answer, setAnswer] = useState("");
   const [answerLog, setAnswerLog] = useState<AnswerLogProps[]>([]);
   const [end, setEnd] = useState(false);
@@ -82,51 +85,68 @@ const Game = () => {
 
   return (
     <div>
-      <h1>
+      <h1
+        css={css`
+          text-align: center;
+          font-size: 100px;
+          margin: 0;
+        `}
+      >
         {answerLog.length <= 10 && end ? numbers : numbers.map((_) => "_ ")}
       </h1>
-      <div>
+      <LogList lengthYN={answerLog.length > 0}>
         {answerLog.map((item) => (
           <LogItem>
-            {item.number}
-            <br />
-            Strike: {item.strike}/Ball: {item.ball}/Out: {item.out}
+            <strong>{item.number}</strong>
+            <hr />
+            Strike : <strong>{item.strike}</strong> | Ball :{" "}
+            <strong>{item.ball}</strong> | Out : <strong>{item.out}</strong>
           </LogItem>
         ))}
-      </div>
+      </LogList>
       <Input
         type="number"
         name="answer"
         onChange={inputHandler}
         value={answer}
+        placeholder={`${numberCount}개의 숫자를 입력해주세요.`}
       />
-      <ButtonWrap>
-        <button onClick={submit} disabled={end}>
+      <div>
+        <Button onClick={submit} disabled={end}>
           제출하기
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             navigation("/option");
           }}
         >
           뒤로가기
-        </button>
-      </ButtonWrap>
+        </Button>
+      </div>
       <Toast />
     </div>
   );
 };
 
-const ButtonWrap = styled.div`
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
+const LogList = styled.div<{ lengthYN: boolean }>`
+  max-height: 400px;
+  overflow: auto;
+  padding: 10px;
+  border-radius: 15px;
+  background: ${({ lengthYN }) => (lengthYN ? "#eee" : "white")};
 `;
 
 const LogItem = styled.div`
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #dadada;
+  border: 2px solid var(--main-color);
+  border-radius: 15px;
+  text-align: center;
+  background: white;
+
+  strong {
+    font-weight: 700;
+  }
 `;
 
 export default Game;
