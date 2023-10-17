@@ -56,6 +56,15 @@ const Game = () => {
       return;
     }
 
+    // 값이 없거나 덜 입력한 경우
+    if (input.length !== count) {
+      notify({
+        type: "error",
+        text: `${count}자리 숫자를 입력해주세요.`,
+      });
+      return;
+    }
+
     // 중복된 숫자를 입력한 경우
     const sameAnswer = inputRound.some((item) => item.number === input);
 
