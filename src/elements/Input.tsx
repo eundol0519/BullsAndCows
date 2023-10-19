@@ -1,3 +1,4 @@
+import { forwardRef, type ForwardedRef } from "react";
 import styled from "@emotion/styled/macro";
 
 interface Props {
@@ -15,43 +16,49 @@ interface Props {
   enter?: any;
 }
 
-const Input = ({
-  type = "string",
-  requied = true,
-  placeholder = "텍스트를 입력해주세요",
-  readOnly = false,
-  value,
-  max = 1000,
-  name,
-  onChange,
-  onKeyUp,
-  onFocus,
-  onBlur,
-  enter,
-}: Props) => {
-  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      enter();
-    }
-  };
+const Input = forwardRef(
+  (
+    {
+      type = "string",
+      requied = true,
+      placeholder = "텍스트를 입력해주세요",
+      readOnly = false,
+      value,
+      max = 1000,
+      name,
+      onChange,
+      onKeyUp,
+      onFocus,
+      onBlur,
+      enter,
+    }: Props,
+    ref: ForwardedRef<HTMLInputElement>
+  ) => {
+    const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        enter();
+      }
+    };
 
-  return (
-    <InputWrap
-      type={type}
-      required={requied}
-      placeholder={placeholder}
-      readOnly={readOnly}
-      value={value}
-      maxLength={max}
-      name={name}
-      onChange={onChange}
-      onKeyUp={onKeyUp}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      onKeyPress={onKeyPress}
-    />
-  );
-};
+    return (
+      <InputWrap
+        type={type}
+        required={requied}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        value={value}
+        maxLength={max}
+        name={name}
+        onChange={onChange}
+        onKeyUp={onKeyUp}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onKeyPress={onKeyPress}
+        ref={ref}
+      />
+    );
+  }
+);
 
 const InputWrap = styled.input`
   width: fit-content;

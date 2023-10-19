@@ -1,9 +1,4 @@
-import React, {
-  InputHTMLAttributes,
-  ReactComponentElement,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { getGameOptionState } from "../recoil/atom";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +18,7 @@ interface InputRoundProps {
 
 const Game = () => {
   const navigation = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { count, round, answer } = useRecoilValue(getGameOptionState);
   const [input, setInput] = useState("");
@@ -34,6 +30,16 @@ const Game = () => {
       navigation("/option");
     }
   }, []);
+
+  useEffect(() => {
+    inputFocusHandler();
+  }, [inputRef]);
+
+  const inputFocusHandler = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
 
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -110,6 +116,8 @@ const Game = () => {
       return [...prev, log];
     });
     setInput("");
+
+    inputFocusHandler();
   };
 
   return (
@@ -150,6 +158,7 @@ const Game = () => {
         value={input}
         placeholder={`${count}개의 숫자를 입력해주세요.`}
         enter={submit}
+        ref={inputRef}
       />
       <div>
         <Button onClick={submit} disabled={end}>
