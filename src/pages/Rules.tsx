@@ -6,7 +6,18 @@ const Rules = () => {
   const navigation = useNavigate();
 
   return (
-    <div>
+    <div
+      css={css`
+        h2 {
+          padding: 0 45px;
+        }
+
+        button {
+          width: calc(100% - 90px);
+          margin-left: 45px;
+        }
+      `}
+    >
       <h2>Game Rules</h2>
       <ol>
         <li>
@@ -42,7 +53,6 @@ const Rules = () => {
           ※ 정답은 0~9 사이에 중복되지 않은 랜덤 숫자입니다.
         </span>
       </ol>
-
       <Button
         onClick={() => {
           navigation("/");

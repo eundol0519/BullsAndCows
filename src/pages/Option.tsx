@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast, { notify } from "../elements/Toast";
 import { useRecoilState } from "recoil";
-import { gameOptionState } from "../recoil/atom";
+import { gameOptionState } from "../recoil/option";
 import Input from "../elements/Input";
 import { css } from "@emotion/react";
 import Button from "../elements/Button";

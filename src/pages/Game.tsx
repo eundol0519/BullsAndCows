@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { getGameOptionState } from "../recoil/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { getGameOptionState } from "../recoil/option";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Toast, { notify } from "../elements/Toast";
 import Input from "../elements/Input";
 import { css } from "@emotion/react";
 import Button from "../elements/Button";
+import Canvas from "../components/Canvas";
+import { canvasShowYNState } from "../recoil/game";
 
 interface InputRoundProps {
   [key: string]: string | number;
@@ -21,6 +23,8 @@ const Game = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { count, round, answer } = useRecoilValue(getGameOptionState);
+  const [_, setCanvasShowYN] = useRecoilState(canvasShowYNState);
+
   const [input, setInput] = useState("");
   const [inputRound, setInputRound] = useState<InputRoundProps[]>([]);
   const [end, setEnd] = useState(false);
@@ -122,61 +126,63 @@ const Game = () => {
 
   return (
     <div>
-      <h1
-        css={css`
-          text-align: center;
-          font-size: 100px;
-          margin: 0;
-        `}
-      >
-        {inputRound.length <= 10 && end ? answer : answer.map((_) => "_ ")}
-      </h1>
-      <p
-        css={css`
-          margin-top: 0;
-          text-align: center;
-        `}
-      >
-        (현재 라운드 : {inputRound.length}/{round})
-      </p>
-      <LogList lengthYN={inputRound.length > 0}>
-        {inputRound.map((item) => (
-          <React.Fragment key={item.number}>
-            <LogItem>
-              <strong>{item.number}</strong>
-              <hr />
-              Strike : <strong>{item.strike}</strong> | Ball :{" "}
-              <strong>{item.ball}</strong> | Out : <strong>{item.out}</strong>
-            </LogItem>
-          </React.Fragment>
-        ))}
-      </LogList>
-      <Input
-        type="number"
-        name="count"
-        onChange={inputHandler}
-        value={input}
-        placeholder={`${count}개의 숫자를 입력해주세요.`}
-        enter={submit}
-        ref={inputRef}
-      />
       <div>
-        <Button onClick={submit} disabled={end}>
-          제출하기
-        </Button>
-        <Button
-          onClick={() => {
-            if (end) {
-              navigation("/");
-            } else {
-              navigation("/option");
-            }
-          }}
+        <h1
+          css={css`
+            text-align: center;
+            font-size: 100px;
+            margin: 0;
+          `}
         >
-          {end ? "메인으로" : "뒤로가기"}
-        </Button>
+          {inputRound.length <= 10 && end ? answer : answer.map((_) => "_ ")}
+        </h1>
+        <p
+          css={css`
+            margin-top: 0;
+            text-align: center;
+          `}
+        >
+          (현재 라운드 : {inputRound.length}/{round})
+        </p>
+        <LogList lengthYN={inputRound.length > 0}>
+          {inputRound.map((item) => (
+            <React.Fragment key={item.number}>
+              <LogItem>
+                <strong>{item.number}</strong>
+                <hr />
+                Strike : <strong>{item.strike}</strong> | Ball :{" "}
+                <strong>{item.ball}</strong> | Out : <strong>{item.out}</strong>
+              </LogItem>
+            </React.Fragment>
+          ))}
+        </LogList>
+        <Input
+          type="number"
+          name="count"
+          onChange={inputHandler}
+          value={input}
+          placeholder={`${count}개의 숫자를 입력해주세요.`}
+          enter={submit}
+          ref={inputRef}
+        />
+        <div>
+          <Button onClick={submit} disabled={end}>
+            제출하기
+          </Button>
+          <Button
+            onClick={() => {
+              if (end) {
+                navigation("/");
+              } else {
+                navigation("/option");
+              }
+            }}
+          >
+            {end ? "메인으로" : "뒤로가기"}
+          </Button>
+        </div>
+        <Toast />
       </div>
-      <Toast />
     </div>
   );
 };

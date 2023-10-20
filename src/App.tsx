@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { css } from "@emotion/react";
 import baseBallImg from "./assets/layout/baseBall.png";
 import styled from "@emotion/styled";
 import Button from "./elements/Button";
@@ -32,6 +31,7 @@ function App() {
 const Wrap = styled.div`
   text-align: center;
   width: 100%;
+  padding: 0 45px;
 `;
 
 export default App;
