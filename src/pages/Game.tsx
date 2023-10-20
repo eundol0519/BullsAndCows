@@ -7,7 +7,6 @@ import Toast, { notify } from "../elements/Toast";
 import Input from "../elements/Input";
 import { css } from "@emotion/react";
 import Button from "../elements/Button";
-import Canvas from "../components/Canvas";
 import { canvasShowYNState } from "../recoil/game";
 
 interface InputRoundProps {
@@ -169,6 +168,7 @@ const Game = () => {
           <Button onClick={submit} disabled={end}>
             제출하기
           </Button>
+          <Button onClick={() => setCanvasShowYN(true)}>메모장</Button>
           <Button
             onClick={() => {
               if (end) {

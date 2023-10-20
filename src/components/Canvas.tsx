@@ -2,7 +2,11 @@ import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
 import Button from "../elements/Button";
 
-const Canvas = () => {
+interface Props {
+  close: () => void;
+}
+
+const Canvas = ({ close }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null); // 리퍼런스에 타입 명시
   const contextRef = useRef<CanvasRenderingContext2D | null>(null); // 리퍼런스에 타입 명시
 
@@ -11,9 +15,10 @@ const Canvas = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+
     if (canvas) {
-      canvas.width = window.innerWidth * 0.5;
-      canvas.height = window.innerHeight - 600;
+      canvas.width = window.innerWidth * 0.65;
+      canvas.height = window.innerHeight - 500;
 
       const context = canvas.getContext("2d");
       if (context) {
@@ -69,18 +74,40 @@ const Canvas = () => {
         onMouseMove={drawing}
         onMouseLeave={finishDrawing}
       ></canvas>
-      <Button onClick={clearCanvas}>지우기</Button>
+      <div className="buttonWrap">
+        <Button onClick={clearCanvas}>지우기</Button>
+        <Button onClick={close}>닫기</Button>
+      </div>
     </Wrap>
   );
 };
 
 const Wrap = styled.div`
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+  background: #e1e1e1;
+
   canvas {
-    position: absolute;
-    z-index: 10;
-    background: gray;
-    top: 100px;
-    right: 100px;
+    border: 2px solid #e1e1e1;
+    border-radius: 20px;
+    background: white;
+    margin: 10px;
+  }
+
+  .buttonWrap {
+    display: flex;
+    gap: 10px;
+  }
+
+  @media screen and (max-width: 414px) {
+    canvas {
+      width: 80vw;
+      height: 50vh;
+    }
   }
 `;
 
