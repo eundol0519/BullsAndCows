@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { getGameOptionState } from "../recoil/option";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
@@ -22,7 +22,7 @@ const Game = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { count, round, answer } = useRecoilValue(getGameOptionState);
-  const [_, setCanvasShowYN] = useRecoilState(canvasShowYNState);
+  const setCanvasShowYN = useSetRecoilState(canvasShowYNState);
 
   const [input, setInput] = useState("");
   const [inputRound, setInputRound] = useState<InputRoundProps[]>([]);
