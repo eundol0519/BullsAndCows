@@ -31,7 +31,7 @@ const Canvas = ({ close }: Props) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawingHistory, setDrawingHistory] = useState([]);
-  const [activeColorCode, setActiveColorCode] = useState(
+  const [activeState, setActiveState] = useState(
     rainbowAndNeutralPalette[8].code
   );
 
@@ -112,7 +112,7 @@ const Canvas = ({ close }: Props) => {
     context.strokeStyle = colorCode;
     context.lineWidth = 2.5;
 
-    setActiveColorCode(colorCode);
+    setActiveState(colorCode);
   };
 
   const remove = () => {
@@ -124,15 +124,19 @@ const Canvas = ({ close }: Props) => {
         rainbowAndNeutralPalette[rainbowAndNeutralPalette.length - 1].code;
       context.lineWidth = 20;
     }
+
+    setActiveState("remove");
   };
 
-  const undo = () => {
-    if (drawingHistory.length > 0) {
+  const revert = () => {
+    if (drawingHistory.length > 10) {
       const newDrawingHistory = drawingHistory.slice(0, -10);
       setDrawingHistory(newDrawingHistory);
 
       ctx.putImageData(newDrawingHistory[newDrawingHistory.length - 1], 0, 0);
     }
+
+    setActiveState("undo");
   };
 
   return (
@@ -150,7 +154,7 @@ const Canvas = ({ close }: Props) => {
             {rainbowAndNeutralPalette.map((item) => (
               <div
                 key={item.name}
-                className={`item ${item.code === activeColorCode && "active"}`}
+                className={`item ${item.code === activeState && "active"}`}
                 css={css`
                   background: ${item.code};
                 `}
@@ -160,7 +164,7 @@ const Canvas = ({ close }: Props) => {
           </div>
           <div className="other">
             <RxEraser onClick={remove} />
-            <GrRevert onClick={undo} />
+            <GrRevert onClick={revert} />
           </div>
         </div>
       </div>
