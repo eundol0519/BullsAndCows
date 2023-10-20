@@ -9,7 +9,6 @@ import Content from "./components/Content";
 import Game from "./pages/Game";
 import Option from "./pages/Option";
 import "./styles/index.css";
-import Page from "./pages/Page";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -23,7 +22,6 @@ const router = createBrowserRouter([
   { path: "/rules", element: <Rules /> },
   { path: "/option", element: <Option /> },
   { path: "/gameStart", element: <Game /> },
-  { path: "test", element: <Page /> },
 ]);
 
 root.render(
