@@ -1,31 +1,22 @@
 import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
 import Button from "../elements/Button";
-import { useRecoilState } from "recoil";
-import { canvasContentState } from "../recoil/game";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { canvasContentState, canvasShowYNState } from "../recoil/game";
 import { css } from "@emotion/react";
 
 import { RxEraser } from "react-icons/rx";
 import { GrRevert } from "react-icons/gr";
+import { useLocation } from "react-router-dom";
+import { rainbowAndNeutralPalette } from "../context/palette";
 
 interface Props {
   close: () => void;
 }
 
-const rainbowAndNeutralPalette = [
-  { name: "red", code: "#FF0000" },
-  { name: "orange", code: "#FFA500" },
-  { name: "yellow", code: "#FFFF00" },
-  { name: "green", code: "#008000" },
-  { name: "blue", code: "#0000FF" },
-  { name: "indigo", code: "#4B0082" },
-  { name: "purple", code: "#800080" },
-  { name: "black", code: "#000000" },
-  { name: "gray", code: "#808080" },
-  { name: "white", code: "#FFFFFF" },
-];
-
 const Canvas = ({ close }: Props) => {
+  const location = useLocation();
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
@@ -36,6 +27,13 @@ const Canvas = ({ close }: Props) => {
   );
 
   const [canvasContent, setCanvasContent] = useRecoilState(canvasContentState);
+  const setCanvasShowYN = useSetRecoilState(canvasShowYNState);
+
+  useEffect(() => {
+    if (location.pathname !== "/gameStart") {
+      setCanvasShowYN(false);
+    }
+  }, [location]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
