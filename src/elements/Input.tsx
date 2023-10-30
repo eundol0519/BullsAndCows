@@ -30,12 +30,12 @@ const Input = forwardRef(
       onKeyUp,
       onFocus,
       onBlur,
-      enter,
+      enter = null,
     }: Props,
     ref: ForwardedRef<HTMLInputElement>
   ) => {
     const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && enter) {
         enter();
       }
     };
