@@ -21,6 +21,7 @@ interface InputRoundProps {
 const Game = () => {
   const navigation = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { count, round, answer } = useRecoilValue(getGameOptionState);
   const setCanvasShowYN = useSetRecoilState(canvasShowYNState);
@@ -39,6 +40,10 @@ const Game = () => {
   useEffect(() => {
     inputFocusHandler();
   }, [inputRef]);
+
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [inputRound]);
 
   const inputFocusHandler = () => {
     if (inputRef.current) {
@@ -121,8 +126,6 @@ const Game = () => {
       return [...prev, log];
     });
     setInput("");
-
-    inputFocusHandler();
   };
 
   const again = (count: number) => {
@@ -155,7 +158,7 @@ const Game = () => {
         >
           (현재 라운드 : {inputRound.length}/{round})
         </p>
-        <LogList lengthYN={inputRound.length > 0}>
+        <LogList lengthYN={inputRound.length > 0} ref={scrollRef}>
           {inputRound.map((item) => (
             <React.Fragment key={item.number}>
               <LogItem>
