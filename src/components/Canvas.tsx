@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
 import Button from "../elements/Button";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { canvasContentState, canvasShowYNState } from "../recoil/game";
+import { canvasContentState, canvasShowYNState } from "../recoil/canvas";
 import { css } from "@emotion/react";
 
 import { RxEraser } from "react-icons/rx";

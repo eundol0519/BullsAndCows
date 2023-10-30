@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { getGameOptionState } from "../recoil/option";
+import { gameOptionState, getGameOptionState } from "../recoil/option";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import Toast, { notify } from "../elements/Toast";
 import Input from "../elements/Input";
 import { css } from "@emotion/react";
 import Button from "../elements/Button";
-import { canvasShowYNState } from "../recoil/game";
+import { canvasShowYNState } from "../recoil/canvas";
+import { makeRandomNumber } from "../hooks/randomNumber";
 
 interface InputRoundProps {
   [key: string]: string | number;
@@ -23,6 +24,7 @@ const Game = () => {
 
   const { count, round, answer } = useRecoilValue(getGameOptionState);
   const setCanvasShowYN = useSetRecoilState(canvasShowYNState);
+  const setGameOptionState = useSetRecoilState(gameOptionState);
 
   const [input, setInput] = useState("");
   const [inputRound, setInputRound] = useState<InputRoundProps[]>([]);
@@ -123,6 +125,16 @@ const Game = () => {
     inputFocusHandler();
   };
 
+  const again = (count: number) => {
+    const randomNumber = makeRandomNumber(count);
+
+    setGameOptionState((prev) => {
+      return { ...prev, answer: randomNumber };
+    });
+    setEnd(false);
+    setInputRound([]);
+  };
+
   return (
     <div>
       <div>
@@ -155,20 +167,44 @@ const Game = () => {
             </React.Fragment>
           ))}
         </LogList>
-        <Input
-          type="number"
-          name="count"
-          onChange={inputHandler}
-          value={input}
-          placeholder={`${count}개의 숫자를 입력해주세요.`}
-          enter={submit}
-          ref={inputRef}
-        />
+        {!end ? (
+          <Input
+            type="number"
+            name="count"
+            onChange={inputHandler}
+            value={input}
+            placeholder={`${count}개의 숫자를 입력해주세요.`}
+            enter={submit}
+            ref={inputRef}
+          />
+        ) : (
+          <div
+            className="placeholder"
+            css={css`
+              width: 249px;
+              margin-top: 10px;
+            `}
+          />
+        )}
         <div>
-          <Button onClick={submit} disabled={end}>
-            제출하기
-          </Button>
-          <Button onClick={() => setCanvasShowYN(true)}>메모장</Button>
+          {!end && (
+            <>
+              <Button onClick={submit} disabled={end}>
+                제출하기
+              </Button>
+              <Button onClick={() => setCanvasShowYN(true)}>메모장</Button>
+            </>
+          )}
+
+          {end && (
+            <Button
+              onClick={() => {
+                again(count);
+              }}
+            >
+              재시작
+            </Button>
+          )}
           <Button
             onClick={() => {
               if (end) {

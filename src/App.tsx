@@ -1,6 +1,6 @@
 import Content from "./components/Content";
 import { useRecoilState } from "recoil";
-import { canvasShowYNState } from "./recoil/game";
+import { canvasShowYNState } from "./recoil/canvas";
 import Canvas from "./components/Canvas";
 import Router from "./pages/Router";
 import { BrowserRouter } from "react-router-dom";

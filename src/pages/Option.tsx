@@ -7,35 +7,24 @@ import { gameOptionState } from "../recoil/option";
 import Input from "../elements/Input";
 import { css } from "@emotion/react";
 import Button from "../elements/Button";
+import { makeRandomNumber } from "../hooks/randomNumber";
 
 const Option = () => {
   const navigation = useNavigate();
 
-  const [{ count, round }, setOptionState] = useRecoilState(gameOptionState);
+  const [{ count, round, answer }, setOptionState] =
+    useRecoilState(gameOptionState);
 
   useEffect(() => {
     mixHandler();
   }, [count]);
 
   const mixHandler = () => {
-    const result = makeRandomNumber();
+    const randomNumber = makeRandomNumber(count);
 
     setOptionState((prev) => {
-      return { ...prev, answer: result };
+      return { ...prev, answer: randomNumber };
     });
-  };
-
-  const makeRandomNumber = () => {
-    let numbers: number[] = [];
-
-    while (numbers.length < count) {
-      const number = Math.floor(Math.random() * 10); // 0 ~ 9
-      const notSame = !numbers.includes(number);
-
-      notSame && numbers.push(number);
-    }
-
-    return numbers;
   };
 
   const countHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
