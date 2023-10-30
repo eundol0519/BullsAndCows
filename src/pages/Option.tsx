@@ -12,8 +12,7 @@ import { makeRandomNumber } from "../hooks/randomNumber";
 const Option = () => {
   const navigation = useNavigate();
 
-  const [{ count, round, answer }, setOptionState] =
-    useRecoilState(gameOptionState);
+  const [{ count, round }, setOptionState] = useRecoilState(gameOptionState);
 
   useEffect(() => {
     mixHandler();
