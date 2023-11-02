@@ -38,14 +38,14 @@ const Game = () => {
   }, []);
 
   useEffect(() => {
-    inputFocusHandler();
+    inputFocus();
   }, [inputRef]);
 
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [inputRound]);
 
-  const inputFocusHandler = () => {
+  const inputFocus = () => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -126,6 +126,7 @@ const Game = () => {
       return [...prev, log];
     });
     setInput("");
+    inputFocus();
   };
 
   const again = (count: number) => {
