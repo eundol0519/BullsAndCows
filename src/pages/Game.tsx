@@ -149,7 +149,7 @@ const Game = () => {
             margin: 0;
           `}
         >
-          {inputRound.length <= 10 && end ? answer : answer.map((_) => "_ ")}
+          {inputRound.length <= count && end ? answer : answer.map((_) => "_ ")}
         </h1>
         <p
           css={css`
